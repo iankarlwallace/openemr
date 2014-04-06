@@ -113,7 +113,8 @@ class NumberToText {
 	        
 	        if ($section > count($big) - 1) {
 	            // ran out of names for numbers this big, call recursively
-	            $text = NumberToText($int, false, false, $and)." ".$big[$section-1]." ".$text;
+              $numberToText = new NumberToText($int, false, false, $and);
+	            $text = $numberToText->convert()." ".$big[$section-1]." ".$text;
 	            $int = 0;
 	        } else {
 	            // we can handle it
@@ -149,7 +150,7 @@ class NumberToText {
 	    if ($decimal && $currency) {
 	        // if we have any cents, add those
 	        if ($int_o > 0) {
-	            $text .= " ".N2T_AND." ";
+            substr($text, -1) == " " ? $text .= N2T_AND." " : $text .=" ".N2T_AND." ";
 	        }
 	        
 	        $cents = substr($decimal,0,2); // (0.)2342 -> 23
@@ -211,7 +212,7 @@ class NumberToText {
 	    if ($tens) {
 	        // we still have values
 	        if ($and && ($hundreds || $preceding)) {
-	            $text .= " ".N2T_AND." ";
+            substr($text,-1) == " " ? $text .= N2T_AND." " : $text .= " ".N2T_AND." ";
 	        }
 	        
 	        if ($tens < 20) {
@@ -227,6 +228,9 @@ class NumberToText {
 	    return $text;
 	}
 
+  /**
+   * @codeCoverageIgnore
+   */
 	function getmicrotime(){
 	    list($usec, $sec) = explode(" ",microtime());
 	    return ((float)$usec + (float)$sec);

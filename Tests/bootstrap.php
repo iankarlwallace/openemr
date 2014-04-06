@@ -1,24 +1,10 @@
 <?php
-/* Copyright © 2010 by Andrew Moore <amoore@cpan.org> */
-/* Licensing information appears at the end of this file. */
-require_once dirname(__FILE__) . '/BaseHarness.class.php';
+/* Copyright (c) 2014 Ian Wallace iankarlwallace at gmail dot com */
+/* bootstrap.php - include standard directories to make tests easy*/
 
-class OptionsTest extends BaseHarness
-{
+// include the root dir so that we can just refer to the relative dir
+set_include_path(get_include_path().PATH_SEPARATOR.'../.');
 
-  public function test_disp_end_cell()
-  {
-    global $item_count;
-    $item_count = 1;
-    $expected = '</td>';
-    ob_start();
-    disp_end_cell();
-    $captured = ob_get_clean();
-    $this->assertEquals( $expected, $captured );
-
-  }
-
-}
 
 /*
 This file is free software: you can redistribute it and/or modify it under the

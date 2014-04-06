@@ -31,19 +31,19 @@ function oeFormatShortDate($date='today') {
 
 // 0 - Time format 24 hr
 // 1 - Time format 12 hr
-function oeFormatTime( $time, $format = "" ) 
+function oeFormatTime( $time, $format = "" )
 {
 	$formatted = $time;
 	if ( $format == "" ) {
 		$format = $GLOBALS['time_display_format'];
 	}
-	
+
 	if ( $format == 0 ) {
-		$formatted = date( "H:i", strtotime( $time ) );	
+		$formatted = date( "H:i", strtotime( $time ) );
 	} else if ( $format == 1 ) {
-		$formatted = date( "g:i a", strtotime( $time ) );		
+		$formatted = date( "g:i a", strtotime( $time ) );
 	}
-	
+
 	return $formatted;
 }
 
@@ -52,14 +52,15 @@ function oeFormatSDFT($time) {
   return oeFormatShortDate(date('Y-m-d', $time));
 }
 
-// Format the body of a patient note.
+// Format the body of a patient note, by replacing all dates matched at the front of lines to the correct
+// display format (oeFormatShortDate).
 function oeFormatPatientNote($note) {
   $i = 0;
   while ($i !== false) {
     if (preg_match('/^\d\d\d\d-\d\d-\d\d/', substr($note, $i))) {
       $note = substr($note, 0, $i) . oeFormatShortDate(substr($note, $i, 10)) . substr($note, $i + 10);
     }
-    $i = strpos("\n", $note, $i);
+    $i = strpos($note, "\n", $i);
     if ($i !== false) ++$i;
   }
   return $note;
@@ -93,27 +94,22 @@ function DateToYYYYMMDD($DateValue)
  {//With the help of function DateFormatRead() now the user can enter date is any of the 3 formats depending upon the global setting.
  //But in database the date can be stored only in the yyyy-mm-dd format.
  //This function accepts a date in any of the 3 formats, and as per the global setting, converts it to the yyyy-mm-dd format.
-	if(trim($DateValue)=='')
-	 {
-	  return '';
-	 }
-	 
-	if($GLOBALS['date_display_format']==0)
-	 {
-	  return $DateValue;
-	 }
-	else if($GLOBALS['date_display_format']==1 || $GLOBALS['date_display_format']==2)
-	 {
-	  $DateValueArray=split('/',$DateValue);
-	  if($GLOBALS['date_display_format']==1)
-	   {
-		  return $DateValueArray[2].'-'.$DateValueArray[0].'-'.$DateValueArray[1];
+
+	$ret = '';
+    if(!trim($DateValue)=='') {
+	   if($GLOBALS['date_display_format']==0) {
+	       $ret = $DateValue;
+	   } else if($GLOBALS['date_display_format']==1 || $GLOBALS['date_display_format']==2) {
+	       $DateValueArray=explode('/',$DateValue);
+	       if($GLOBALS['date_display_format']==1)  {
+		      $ret = $DateValueArray[2].'-'.$DateValueArray[0].'-'.$DateValueArray[1];
+	       }
+	       if($GLOBALS['date_display_format']==2) {
+		      $ret = $DateValueArray[2].'-'.$DateValueArray[1].'-'.$DateValueArray[0];
+	       }
 	   }
-	  if($GLOBALS['date_display_format']==2)
-	   {
-		  return $DateValueArray[2].'-'.$DateValueArray[1].'-'.$DateValueArray[0];
-	   }
-	 }
+    }
+    return $ret;
  }
 
 ?>

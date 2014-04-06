@@ -2,68 +2,56 @@
 /* Copyright © 2010 by Andrew Moore */
 /* Licensing information appears at the end of this file. */
 
-error_reporting(E_ALL);
-require_once 'PHPUnit/Framework.php';
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../library');
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../library/classes');
-require_once 'Installer.class.php';
-
 class BaseHarness extends PHPUnit_Framework_TestCase
 {
-    public static function get_installer()
-    {
-      $fixture_cgi = array( 'login'           => 'test_login',
-                            'iuser'           => 'test_iuser',
-                            'iuname'          => 'test_iuname',
-                            'igroup'          => 'test_igroup',
-                            'pass'            => 'test_pass',
-                            'server'          => 'localhost',
-                            'loginhost'       => 'localhost',
-                            'port'            => '3306',
-                            'root'            => 'root',
-                            'rootpass'        => getenv('EMR_ROOT_DATABASE_PASSWORD'),
-                            'dbname'          => 'openemr_test_suite',
-                            'collate'         => 'utf8_general_ci',
-			    'site'            => 'default',
-                            );
-        return new Installer( $fixture_cgi );
-    }
 
+  /**
+   * For tests that use a DB connection we can not backup/restore
+   * the GLOBALS['adodb'] -> it stores caching info, etc  that will
+   * break tests, just ignore it and let adodb deal with it
+   */
+  protected $backupGlobalsBlacklist = array(
+   'adodb',
+  );
 
-    public static function setUpBeforeClass()
-    {
-        // session_start();
-        $_SESSION['authUser']  = 'tester';
-        $_SESSION['authGroup'] = 'testgroup';
+  public static function setUpBeforeClass() {
+    $_SESSION['site_id']   = 'default';
+    $_SESSION['authUser']  = 'testopenemr';
+    $_SESSION['authGroup'] = 'testgroup';
 
-        $GLOBALS = array( 'enable_auditlog' => '0',
-                          );
-        $_SERVER['REQUEST_URI'] = '';
-        $_SERVER['SERVER_NAME'] = '';
-	$_SERVER['HTTP_HOST']   = 'default';
-        $ignoreAuth = 1;
+    $_SERVER['REQUEST_URI'] = '/';
+    $_SERVER['SERVER_NAME'] = 'localhost';
+    $_SERVER['HTTP_HOST']   = 'localhost';
+    $_SERVER['DOCUMENT_ROOT'] = '/';
 
-        $installer = self::get_installer();
-        if ( ! $installer->quick_install() ) {
-	  echo "quick_install failed:\n";
-          echo $installer->error_message;
-          exit;
-        }
-        require_once 'translation.inc.php';
-        require_once 'globals.inc.php';
-        require_once 'interface/globals.php';
-        require_once "$srcdir/sql.inc";
-        require_once "$srcdir/options.inc.php";
+    $GLOBALS['enable_auditlog'] = 0;
+    $GLOBALS['fake_register_globals'] = FALSE;
+    $GLOBALS['sanitize_all_escapes'] = FALSE;
 
-        $_SESSION['authUser']  = 'tester';
-        $_SESSION['authGroup'] = 'testgroup';
-    }
+    $ignoreAuth = TRUE;
+    $css_header = '/interface/themes/default_style.css';
+    $backpic = 'no-backpic.jpg';
 
-    public static function tearDownAfterClass()
-    {
-        $installer = self::get_installer();
-        $installer->drop_database();
-    }
+    require_once('interface/globals.php');
+  }
+
+  public static function tearDownAfterClass() {
+    unset($_SESSION['site_id']);
+    unset($_SESSION['authUser']);
+    unset($_SESSION['authGroup']);
+
+    unset($_SERVER['REQUEST_URI']);
+    unset($_SERVER['SERVER_NAME']);
+    unset($_SERVER['HTTP_HOST']);
+    unset($_SERVER['DOCUMENT_ROOT']);
+
+    unset($GLOBALS['enable_auditlog']);
+    unset($GLOBALS['ignoreAuth']);
+    unset($GLOBALS['fake_register_globals']);
+    unset($GLOBALS['sanitize_all_escapes']);
+    unset($GLOBALS['css_header']);
+    unset($GLOBALS['backpic']);
+  }
 }
 
 /*

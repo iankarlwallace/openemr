@@ -9,10 +9,11 @@
 // Cristian Navalici lemonsoftware at gmail dot com
 //
 // For Hebrew must be implemented a special calendar functions
-// 
+//
 // 10.07.2007 - dateformat accepts now an argument
 // ============================================================
 
+require_once(__DIR__.'/translation.inc.php');
 
 function dateformat ($strtime = '', $with_dow = false) {
 
@@ -64,7 +65,7 @@ switch ($languageTitle) {
             $dt = date ("F j, Y", $strtime);
             if ($with_dow) $dt = "$dow, $dt";
             break;
-	case "Swedish": 
+	case "Swedish":
             $dt = date ("Y", $strtime) . " $nom " . date("d", $strtime);
             if ($with_dow) $dt = "$dow $dt";
             break;
@@ -81,7 +82,7 @@ switch ($languageTitle) {
             if ($with_dow) $dt = "$dow $dt";
             break;
 	// hebrew (israel) , display english NOT jewish calendar
-	case "Hebrew": 
+	case "Hebrew":
             $dt = date ("F jS Y", $strtime);
             if ($with_dow) $dt = "$dow, $dt";
             break;
