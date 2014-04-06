@@ -2,68 +2,36 @@
 /* Copyright © 2010 by Andrew Moore */
 /* Licensing information appears at the end of this file. */
 
-error_reporting(E_ALL);
-require_once 'PHPUnit/Framework.php';
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../library');
-set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../library/classes');
-require_once 'Installer.class.php';
-
 class BaseHarness extends PHPUnit_Framework_TestCase
 {
-    public static function get_installer()
-    {
-      $fixture_cgi = array( 'login'           => 'test_login',
-                            'iuser'           => 'test_iuser',
-                            'iuname'          => 'test_iuname',
-                            'igroup'          => 'test_igroup',
-                            'pass'            => 'test_pass',
-                            'server'          => 'localhost',
-                            'loginhost'       => 'localhost',
-                            'port'            => '3306',
-                            'root'            => 'root',
-                            'rootpass'        => getenv('EMR_ROOT_DATABASE_PASSWORD'),
-                            'dbname'          => 'openemr_test_suite',
-                            'collate'         => 'utf8_general_ci',
-			    'site'            => 'default',
-                            );
-        return new Installer( $fixture_cgi );
-    }
 
+  public static function setUpBeforeClass()
+  {
+    global $ignoreAuth;
+    global $fake_register_globals;
+    global $sanitize_all_escapes;
 
-    public static function setUpBeforeClass()
-    {
-        // session_start();
-        $_SESSION['authUser']  = 'tester';
-        $_SESSION['authGroup'] = 'testgroup';
+    $_SESSION['site_id']   = 'default';
+    $_SESSION['authUser']  = 'testopenemr';
+    $_SESSION['authGroup'] = 'testgroup';
 
-        $GLOBALS = array( 'enable_auditlog' => '0',
-                          );
-        $_SERVER['REQUEST_URI'] = '';
-        $_SERVER['SERVER_NAME'] = '';
-	$_SERVER['HTTP_HOST']   = 'default';
-        $ignoreAuth = 1;
+    $_SERVER['REQUEST_URI'] = '/';
+    $_SERVER['SERVER_NAME'] = 'localhost';
+    $_SERVER['HTTP_HOST']   = 'localhost';
+    $_SERVER['DOCUMENT_ROOT'] = dirname(__FILE__);
 
-        $installer = self::get_installer();
-        if ( ! $installer->quick_install() ) {
-	  echo "quick_install failed:\n";
-          echo $installer->error_message;
-          exit;
-        }
-        require_once 'translation.inc.php';
-        require_once 'globals.inc.php';
-        require_once 'interface/globals.php';
-        require_once "$srcdir/sql.inc";
-        require_once "$srcdir/options.inc.php";
+    // No audit logging on tests
+    $GLOBALS['enable_auditlog'] = 0;
+    $ignoreAuth = TRUE;
+    $fake_register_globals=false;
+    $sanitize_all_escapes=true;
 
-        $_SESSION['authUser']  = 'tester';
-        $_SESSION['authGroup'] = 'testgroup';
-    }
+    require_once(dirname(__FILE__) . '/../interface/globals.php');
+  }
 
-    public static function tearDownAfterClass()
-    {
-        $installer = self::get_installer();
-        $installer->drop_database();
-    }
+  public static function tearDownAfterClass()
+  {
+  }
 }
 
 /*

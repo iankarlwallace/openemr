@@ -2,7 +2,32 @@
 <!-- Copyright © 2010 by Andrew Moore -->
 <!-- Licensing information appears at the end of this file. -->
 
-<phpunit backupGlobals="false">
+<phpunit backupGlobals="false" colors="true">
+
+  <!-- _REQUEST vars that would be set by setup.php -->
+  <php>
+    <request name="iuser" value="testadmin"/>
+    <request name="iuserpass" value="testadmin"/>
+    <request name="iuname" value="Test Administrator"/>
+    <request name="iufname" value="Test Administrator"/>
+    <request name="igroup" value="admin"/>
+    <request name="server" value="localhost"/>
+    <request name="loginhost" value="localhost"/>
+    <request name="port" value="3306"/>
+    <request name="root" value="root"/>
+    <request name="rootpass" value="Lrb4x4bf12"/>
+    <request name="login" value="testopenemr"/>
+    <request name="pass" value="testopenemr"/>
+    <request name="dbname" value="testopenemr"/>
+    <request name="collate" value=""/>
+    <request name="site" value="default"/>
+    <request name="source_site_id" value="1"/>
+    <request name="clone_database" value="0"/>
+    <request name="no_root_db_access" value="0"/>
+    <request name="development_translations" value=""/>
+
+    <server name="HTTP_HOST" value="localhost"/>
+  </php>
 
   <testsuites>
     <testsuite name="openemr">
@@ -10,17 +35,14 @@
     </testsuite>
   </testsuites>
 
+  <filter>
+    <blacklist>
+      <directory suffix=".php">Tests</directory>
+    </blacklist>
+  </filter>
+
+  <logging>
+    <log type="coverage-html" target="codecover" charset="UTF-8" highlight="false" lowUpperBound="35" highLowerBound="70"/>
+  </logging>
+
 </phpunit>
-
-<!--
-This file is free software: you can redistribute it and/or modify it under the
-terms of the GNU General Public License as publish by the Free Software
-Foundation.
-
-This file is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU Gneral Public License for more details.
-
-You should have received a copy of the GNU General Public Licence along with
-this file.  If not see <http://www.gnu.org/licenses/>.
--->
