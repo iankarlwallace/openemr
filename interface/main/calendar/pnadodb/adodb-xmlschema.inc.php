@@ -458,7 +458,7 @@ class adoSchema {
 		// Create the parser
 		$this->xmlParser = &$xmlParser;
 		$xmlParser = xml_parser_create();
-		xml_set_object( $xmlParser, &$this );
+		xml_set_object( $xmlParser, $this );
 		
 		// Initialize the XML callback functions
 		xml_set_element_handler( $xmlParser, "_xmlcb_startElement", "_xmlcb_endElement" );

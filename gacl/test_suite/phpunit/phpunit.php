@@ -201,7 +201,7 @@ class TestCase extends Assert /* implements Test */ {
     if (! $testResult)
       $testResult = $this->_createResult();
     $this->fResult = $testResult;
-    $testResult->run(&$this);
+    $testResult->run($this);
     $this->fResult = 0;
     return $testResult;
   }
@@ -264,13 +264,13 @@ class TestCase extends Assert /* implements Test */ {
     //printf("TestCase::fail(%s)<br>\n", ($message) ? $message : '');
     /* JUnit throws AssertionFailedError here.  We just record the
        failure and carry on */
-    $this->fExceptions[] = new Exception(&$message, 'FAILURE');
+    $this->fExceptions[] = new Exception($message, 'FAILURE');
   }
 
   function error($message) {
     /* report error that requires correction in the test script
        itself, or (heaven forbid) in this testing infrastructure */
-    $this->fExceptions[] = new Exception(&$message, 'ERROR');
+    $this->fExceptions[] = new Exception($message, 'ERROR');
     $this->fResult->stop();	// [does not work]
   }
 
@@ -379,7 +379,7 @@ class TestSuite /* implements Test */ {
     while (list($na, $test) = each($this->fTests)) {
       if ($testResult->shouldStop())
 	break;
-      $test->run(&$testResult);
+      $test->run($testResult);
     }
   }
 
@@ -436,11 +436,11 @@ class TestResult {
   }
 
   function addError($test, $exception) {
-      $this->fErrors[] = new TestFailure(&$test, &$exception);
+      $this->fErrors[] = new TestFailure($test, $exception);
   }
 
   function addFailure($test, $exception) {
-      $this->fFailures[] = new TestFailure(&$test, &$exception);
+      $this->fFailures[] = new TestFailure($test, $exception);
   }
 
   function getFailures() {

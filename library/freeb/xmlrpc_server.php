@@ -21,10 +21,10 @@ $s=new xmlrpc_server(false,false);
 if (! $auth) {
  header('WWW-Authenticate: Basic realm="Unauthorized Access Prohibited"');
  header("HTTP/1.0 401 Unauthorized");
- return new xmlrpcresp(0, &$oerbill->xmlrpcerruser, $GLOBALS['xmlrpcerruser']); 
+ return new xmlrpcresp(0, $oerbill->xmlrpcerruser, $GLOBALS['xmlrpcerruser']); 
 }
 
-$s->registerMethods(&$oerbill);
+$s->registerMethods($oerbill);
 $s->service();
 
 
