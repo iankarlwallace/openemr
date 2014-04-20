@@ -28,7 +28,6 @@ class SetupTest extends PHPUnit_Extensions_SeleniumTestCase {
         //$this->clickAndWait('css=input[type="SUBMIT"]');
         //$this->clickAndWait('css=input[type="SUBMIT"]');
         //$this->clickAndWait('link="Click here to start *"');
-
     }
 }
 

@@ -30,7 +30,6 @@
     <request name="development_translations" value=""/>
 
     <server name="HTTP_HOST" value="localhost"/>
-    
     <ini name="date.timezone" value="UTC"/>
   </php>
 

@@ -4,7 +4,6 @@
 
 class BaseHarness extends PHPUnit_Framework_TestCase
 {
-
   /**
    * For tests that use a DB connection we can not backup/restore
    * the GLOBALS['adodb'] -> it stores caching info, etc  that will
