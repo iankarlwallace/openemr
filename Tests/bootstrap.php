@@ -3,8 +3,7 @@
 /* bootstrap.php - include standard directories to make tests easy*/
 
 // include the root dir so that we can just refer to the relative dir
-set_include_path(get_include_path().PATH_SEPARATOR.'../.');
-
+set_include_path(get_include_path().PATH_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'.');
 
 /*
 This file is free software: you can redistribute it and/or modify it under the

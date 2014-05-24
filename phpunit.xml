@@ -42,6 +42,7 @@
   <filter>
     <blacklist>
       <directory suffix=".php">Tests</directory>
+      <directory suffic=".php">library/adodb</directory>
     </blacklist>
   </filter>
 

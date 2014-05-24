@@ -69,7 +69,8 @@ switch ($languageTitle) {
             $dt = date ("Y", $strtime) . " $nom " . date("d", $strtime);
             if ($with_dow) $dt = "$dow $dt";
             break;
-	case "Spanish":
+  case "Spanish (Spain)":
+  case "Spanish (Latin American)":
             $dt = date ("d", $strtime) . " $nom " . date("Y", $strtime);
             if ($with_dow) $dt = "$dow $dt";
             break;
