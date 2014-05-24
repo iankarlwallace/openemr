@@ -8,14 +8,14 @@ class OptionsTest extends BaseHarness
 
   public function test_disp_end_cell()
   {
-    $this->markTestIncomplete();
-    // global $item_count;
-    // $item_count = 1;
-    // $expected = '</td>';
-    // ob_start();
-    // disp_end_cell();
-    // $captured = ob_get_clean();
-    // $this->assertEquals( $expected, $captured );
+    require_once('library/options.inc.php');
+    global $item_count;
+    $item_count = 1;
+    $expected = '</td>';
+    ob_start();
+    disp_end_cell();
+    $captured = ob_get_clean();
+    $this->assertEquals( $expected, $captured );
   }
 
 }

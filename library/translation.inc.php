@@ -65,10 +65,10 @@ function xl($constant,$mode='r',$prepend='',$append='') {
 //    xl_document_category()
 //    xl_appt_category()
 //
-// Added 5-09 by BM for translation of list labels (when applicable)
-// Only translates if the $GLOBALS['translate_lists'] is set to true.
-function xl_list_label($constant,$mode='r',$prepend='',$append='') {
-  if ($GLOBALS['translate_lists']) {
+//    xl_generic_wrapper() - used by all other wrappers to asbtract call to xl()
+//
+function xl_generic_wrapper($translate,$constant,$mode='r',$prepend='',$append='') {
+  if ($translate) {
     // TRANSLATE
     if ($mode == "e") {
       xl($constant,$mode,$prepend,$append);
@@ -87,121 +87,41 @@ function xl_list_label($constant,$mode='r',$prepend='',$append='') {
     }
   }
 }
+// Added 5-09 by BM for translation of list labels (when applicable)
+// Only translates if the $GLOBALS['translate_lists'] is set to true.
+function xl_list_label($constant,$mode='r',$prepend='',$append='') {
+  return(xl_generic_wrapper($GLOBALS['translate_lists'],$constant,$mode,$prepend,$append));
+}
 // Added 5-09 by BM for translation of layout labels (when applicable)
 // Only translates if the $GLOBALS['translate_layout'] is set to true.
 function xl_layout_label($constant,$mode='r',$prepend='',$append='') {
-  if ($GLOBALS['translate_layout']) {
-    // TRANSLATE
-    if ($mode == "e") {
-      xl($constant,$mode,$prepend,$append);
-    }
-    else {
-      return xl($constant,$mode,$prepend,$append);
-    }
-  }
-  else {
-    // DO NOT TRANSLATE
-    if ($mode == "e") {
-      echo $prepend.$constant.$append;
-    }
-    else {
-      return $prepend.$constant.$append;
-    }
-  }
+  return(xl_generic_wrapper($GLOBALS['translate_layout'],$constant,$mode,$prepend,$append));
 }
 // Added 6-2009 by BM for translation of access control group labels 
 //  (when applicable)
 // Only translates if the $GLOBALS['translate_gacl_groups'] is set to true.
 function xl_gacl_group($constant,$mode='r',$prepend='',$append='') {
-  if ($GLOBALS['translate_gacl_groups']) {
-    // TRANSLATE
-    if ($mode == "e") {
-      xl($constant,$mode,$prepend,$append);
-    }
-    else {
-      return xl($constant,$mode,$prepend,$append);
-    }
-  }
-  else {
-    // DO NOT TRANSLATE
-    if ($mode == "e") {
-      echo $prepend.$constant.$append;
-    }
-    else {
-      return $prepend.$constant.$append;
-    }
-  }
+  return(xl_generic_wrapper($GLOBALS['translate_gacl_groups'],$constant,$mode,$prepend,$append));
 }
 // Added 6-2009 by BM for translation of patient form (notes) titles
 //  (when applicable)
 // Only translates if the $GLOBALS['translate_form_titles'] is set to true.
 function xl_form_title($constant,$mode='r',$prepend='',$append='') {
-  if ($GLOBALS['translate_form_titles']) {
-    // TRANSLATE
-    if ($mode == "e") {
-      xl($constant,$mode,$prepend,$append);
-    }
-    else {
-      return xl($constant,$mode,$prepend,$append);
-    }
-  }
-  else {
-    // DO NOT TRANSLATE
-    if ($mode == "e") {
-      echo $prepend.$constant.$append;
-    }
-    else {
-      return $prepend.$constant.$append;
-    }
-  }
+  return(xl_generic_wrapper($GLOBALS['translate_form_titles'],$constant,$mode,$prepend,$append));
 }
 //
 // Added 6-2009 by BM for translation of document categories
 //  (when applicable)
 // Only translates if the $GLOBALS['translate_document_categories'] is set to true.
 function xl_document_category($constant,$mode='r',$prepend='',$append='') {
-  if ($GLOBALS['translate_document_categories']) {
-    // TRANSLATE
-    if ($mode == "e") {
-      xl($constant,$mode,$prepend,$append);
-    }
-    else {
-      return xl($constant,$mode,$prepend,$append);
-    }
-  }
-  else {
-    // DO NOT TRANSLATE
-    if ($mode == "e") {
-      echo $prepend.$constant.$append;
-    }
-    else {
-      return $prepend.$constant.$append;
-    }
-  }
+  return(xl_generic_wrapper($GLOBALS['translate_document_categories'],$constant,$mode,$prepend,$append));
 }
 //
 // Added 6-2009 by BM for translation of appointment categories
 //  (when applicable)
 // Only translates if the $GLOBALS['translate_appt_categories'] is set to true.
 function xl_appt_category($constant,$mode='r',$prepend='',$append='') {
-  if ($GLOBALS['translate_appt_categories']) {
-    // TRANSLATE
-    if ($mode == "e") {
-      xl($constant,$mode,$prepend,$append);
-    }
-    else {
-      return xl($constant,$mode,$prepend,$append);
-    }
-  }
-  else {
-    // DO NOT TRANSLATE
-    if ($mode == "e") {
-      echo $prepend.$constant.$append;
-    }
-    else {
-      return $prepend.$constant.$append;
-    }
-  }
+  return(xl_generic_wrapper($GLOBALS['translate_appt_categories'],$constant,$mode,$prepend,$append));
 }
 // ---------------------------------------------------------------------------
 
@@ -298,7 +218,6 @@ function mb_strpad($input, $length, $pad = ' ', $type = STR_PAD_RIGHT, $charset 
             $output = $input . mb_substr(str_repeat($pad, ceil($right / $pad_length)), 0, $right, $charset);
         break;
     }
-
-return $output;
+  return $output;
 }
 ?>
