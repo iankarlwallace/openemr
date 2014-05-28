@@ -9,9 +9,8 @@ class SetupTest extends PHPUnit_Extensions_SeleniumTestCase {
         $this->setBrowserUrl('http://localhost');
     }
 
-    public function testInstallSetupPage()
-    {
-        $this->markTestIncomplete();
+    //public function testInstallSetupPage()
+    //{
         // $this->open('http://localhost');
         // $this->assertEquals('OpenEMR Setup Tool', $this->getTitle());
 
@@ -28,7 +27,7 @@ class SetupTest extends PHPUnit_Extensions_SeleniumTestCase {
         //$this->clickAndWait('css=input[type="SUBMIT"]');
         //$this->clickAndWait('css=input[type="SUBMIT"]');
         //$this->clickAndWait('link="Click here to start *"');
-    }
+    //}
 }
 
 ?>

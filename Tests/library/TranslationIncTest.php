@@ -194,9 +194,46 @@ class TranslationIncTest extends BaseHarness {
 
   /**
    * Multibyte safe string padding
+   * @dataProvider dataTestMbStrpad
    */
-  public function testMbStrpad() {
-      $this->markTestIncomplete();
+  public function testMbStrpad($input, $expected, $length, $pad, $type, $charset = 'UTF-8') {
+      $actual = mb_strpad($input, $length, $pad, $type, $charset);
+      $this->assertEquals($expected, $actual, "MB String [$input] padded and returned [$actual] but expected [$expected]");
+  }
+
+  public static function dataTestMbStrpad() {
+    return array(
+      array('A','A','-1','*',STR_PAD_LEFT),
+      array('A','A','-1','*',STR_PAD_RIGHT),
+      array('A','A','-1','*',STR_PAD_BOTH),
+      array('ﬠ','ﬠ','-1','*',STR_PAD_LEFT),
+      array('ﬠ','ﬠ','-1','*',STR_PAD_RIGHT),
+      array('ﬠ','ﬠ','-1','*',STR_PAD_BOTH),
+      array('A','A','0','*',STR_PAD_LEFT),
+      array('A','A','0','*',STR_PAD_RIGHT),
+      array('A','A','0','*',STR_PAD_BOTH),
+      array('ﬠ','ﬠ','0','*',STR_PAD_LEFT),
+      array('ﬠ','ﬠ','0','*',STR_PAD_RIGHT),
+      array('ﬠ','ﬠ','0','*',STR_PAD_BOTH),
+      array('A','A','1','*',STR_PAD_LEFT),
+      array('A','A','1','*',STR_PAD_RIGHT),
+      array('A','A','1','*',STR_PAD_BOTH),
+      array('ﬠ','ﬠ','1','*',STR_PAD_LEFT),
+      array('ﬠ','ﬠ','1','*',STR_PAD_RIGHT),
+      array('ﬠ','ﬠ','1','*',STR_PAD_BOTH),
+      array('A','**A','3','*',STR_PAD_LEFT),
+      array('A','A**','3','*',STR_PAD_RIGHT),
+      array('A','*A*','3','*',STR_PAD_BOTH),
+      array('ﬠ','**ﬠ','3','*',STR_PAD_LEFT),
+      array('ﬠ','ﬠ**','3','*',STR_PAD_RIGHT),
+      array('ﬠ','*ﬠ*','3','*',STR_PAD_BOTH),
+      array('ﬠ','ﬤﬤﬠ','3','ﬤ',STR_PAD_LEFT),
+      array('ﬠ','ﬠﬤﬤ','3','ﬤ',STR_PAD_RIGHT),
+      array('ﬠ','ﬤﬠﬤ','3','ﬤ',STR_PAD_BOTH),
+      array('ﬠ','ﬤﬤﬤﬠ','4','ﬤ',STR_PAD_LEFT),
+      array('ﬠ','ﬠﬤﬤﬤ','4','ﬤ',STR_PAD_RIGHT),
+      array('ﬠ','ﬤﬠﬤﬤ','4','ﬤ',STR_PAD_BOTH),
+    );
   }
 
   /**
