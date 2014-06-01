@@ -13,8 +13,6 @@
 // 10.07.2007 - dateformat accepts now an argument
 // ============================================================
 
-require_once(__DIR__.'/translation.inc.php');
-
 function dateformat ($strtime = '', $with_dow = false) {
 
 // without an argument, display current date
@@ -69,6 +67,7 @@ switch ($languageTitle) {
             $dt = date ("Y", $strtime) . " $nom " . date("d", $strtime);
             if ($with_dow) $dt = "$dow $dt";
             break;
+  case "Spanish":
   case "Spanish (Spain)":
   case "Spanish (Latin American)":
             $dt = date ("d", $strtime) . " $nom " . date("Y", $strtime);
