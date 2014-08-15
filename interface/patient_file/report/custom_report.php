@@ -18,6 +18,7 @@ use ESign\Api;
  * @package OpenEMR
  * @author  Brady Miller <brady@sparmy.com>
  * @author  Ken Chapple <ken@mi-squared.com>
+ * @author  Tony McCormick <tony@mi-squared.com>
  * @link    http://www.open-emr.org
  */
 
@@ -37,15 +38,23 @@ require_once("$srcdir/htmlspecialchars.inc.php");
 require_once("$srcdir/formdata.inc.php");
 require_once(dirname(__file__) . "/../../../custom/code_types.inc.php");
 require_once $GLOBALS['srcdir'].'/ESign/Api.php';
+if ($GLOBALS['gbl_portal_cms_enable']) {
+  require_once($GLOBALS["include_root"] . "/cmsportal/portal.inc.php");
+}
 
 // For those who care that this is the patient report.
 $GLOBALS['PATIENT_REPORT_ACTIVE'] = true;
 
-$PDF_OUTPUT = empty($_POST['pdf']) ? false : true;
+$PDF_OUTPUT = empty($_POST['pdf']) ? 0 : intval($_POST['pdf']);
 
 if ($PDF_OUTPUT) {
   require_once("$srcdir/html2pdf/html2pdf.class.php");
-  $pdf = new HTML2PDF('P', 'Letter', 'en');
+  // $pdf = new HTML2PDF('P', 'Letter', 'en', array(5, 5, 5, 5) );  // add a little margin 5cm all around TODO: add to globals 
+  $pdf = new HTML2PDF ($GLOBALS['pdf_layout'],
+                       $GLOBALS['pdf_size'],
+                       $GLOBALS['pdf_language'],
+                       array($GLOBALS['pdf_left_margin'],$GLOBALS['pdf_top_margin'],$GLOBALS['pdf_right_margin'],$GLOBALS['pdf_bottom_margin'])
+          ); 
   ob_start();
 }
 
@@ -61,7 +70,7 @@ $auth_demo     = acl_check('patients'  , 'demo');
 $esignApi = new Api();
 
 $printable = empty($_GET['printable']) ? false : true;
-if ($PDF_OUTPUT) $printable = true;
+if ($PDF_OUTPUT) { $printable = true; }
 unset($_GET['printable']);
 
 // Number of columns in tables for insurance and encounter forms.
@@ -140,6 +149,11 @@ function postToGet($arin) {
 <script type="text/javascript" src="<?php echo $GLOBALS['web_root']?>/library/js/jquery-1.5.js"></script>
 <script type="text/javascript" src="<?php echo $GLOBALS['web_root']?>/library/js/SearchHighlight.js"></script>
 <script type="text/javascript">var $j = jQuery.noConflict();</script>
+
+<?php // if the track_anything form exists, then include the styling
+if (file_exists(dirname(__FILE__) . "/../../forms/track_anything/style.css")) { ?>
+ <link rel="stylesheet" href="<?php echo $GLOBALS['web_root']?>/interface/forms/track_anything/style.css" type="text/css">
+<?php  } ?>
 
 <script type="text/javascript">
 
@@ -464,10 +478,17 @@ if ($printable) {
   if (!$results->EOF) {
     $facility = $results->fields;
   }
-  $practice_logo = "../../../custom/practice_logo.gif";
-  if (file_exists($practice_logo)) {
-    echo "<img src='$practice_logo' align='left'>\n";
-  }
+  // Setup Headers and Footers for html2PDF only Download
+  // in HTML view it's just one line at the top of page 1
+  echo '<page_header> ' . xlt("PATIENT") . ':' . text($titleres['lname']) . ', ' . text($titleres['fname']) . ' - ' . $titleres['DOB_TS'] . '</page_header>    ';
+  echo '<page_footer>' . xlt('Generated on') . ' ' . oeFormatShortDate() . ' - ' . text($facility['name']) . ' ' . text($facility['phone']) . '</page_footer>';
+
+  // Use logo if it exists as 'practice_logo.gif' in the site dir
+  // old code used the global custom dir which is no longer a valid
+   $practice_logo = "$OE_SITE_DIR/images/practice_logo.gif";
+   if (file_exists($practice_logo)) {
+        echo "<img src='$practice_logo' align='left'><br />\n";
+     } 
 ?>
 <h2><?php echo $facility['name'] ?></h2>
 <?php echo $facility['street'] ?><br>
@@ -1003,7 +1024,29 @@ if ($PDF_OUTPUT) {
   $content = getContent();
   // $pdf->setDefaultFont('Arial');
   $pdf->writeHTML($content, false);
-  $pdf->Output('report.pdf', 'D'); // D = Download, I = Inline
+  if ($PDF_OUTPUT == 1) {
+    $pdf->Output('report.pdf', $GLOBALS['pdf_output']); // D = Download, I = Inline
+  }
+  else {
+    // This is the case of writing the PDF as a message to the CMS portal.
+    $ptdata = getPatientData($pid, 'cmsportal_login');
+    $contents = $pdf->Output('', true);
+    echo "<html><head>\n";
+    echo "<link rel='stylesheet' href='$css_header' type='text/css'>\n";
+    echo "</head><body class='body_top'>\n";
+    $result = cms_portal_call(array(
+      'action'   => 'putmessage',
+      'user'     => $ptdata['cmsportal_login'],
+      'title'    => xl('Your Clinical Report'),
+      'message'  => xl('Please see the attached PDF.'),
+      'filename' => 'report.pdf',
+      'mimetype' => 'application/pdf',
+      'contents' => base64_encode($contents),
+    ));
+    if ($result['errmsg']) die(text($result['errmsg']));
+    echo "<p>" . xlt('Report has been sent to the patient.') . "</p>\n";
+    echo "</body></html>\n";
+  }
 }
 else {
 ?>
